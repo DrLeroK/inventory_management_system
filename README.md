@@ -42,9 +42,9 @@ A robust, full-featured **Inventory Management System** built with **Django**. T
 |-----------------------------------------|---------------------------------------------|
 | *Dashboard*                             | *Create Sale*                               |
 
-| ![Login](screenshots/product_management.PNG) | ![Posts](screenshots/landing_page.PNG)  |
-|----------------------------------------------|-----------------------------------------|
-| *Product Management*                         | *Landing Page*                           |
+| ![Login](screenshots/product_management.PNG) | ![Landing_Page](screenshots/landingpage.PNG) |
+|----------------------------------------------|----------------------------------------------|
+| *Product Management*                         | *Landing Page*                               |
 
 
 ## 🚀 Getting Started
