@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
+
+{% block title %}Deliveries{% endblock title %}
+
+{% block content %}
+<div class="deliveries-container">
+    <div class="deliveries-header">
+        <h2 class="deliveries-title">
+            <i class="fas fa-truck me-2"></i>Deliveries
+        </h2>
+        <div class="deliveries-actions">
+            <a class="btn btn-delivery btn-add-delivery" href="{% url 'store:delivery-create' %}">
+                <i class="fa-solid fa-plus"></i> Add Delivery
+            </a>
+            <a class="btn btn-delivery btn-export" href="{% querystring '_export'='xlsx' %}">
+                <i class="fa-solid fa-download"></i> Export to Excel
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table deliveries-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID <i class="fa-solid fa-sort ms-1"></i></th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Delivery Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for delivery in deliveries %}
+                <tr>
+                    <th scope="row">{{ delivery.id }}</th>
+                    <td>{{ delivery.item.name }}</td>
+                    <td>{{ delivery.customer_name }}</td>
+                    <td>{{ delivery.phone_number }}</td>
+                    <td>{{ delivery.location }}</td>
+                    <td>{{ delivery.date|date:"M d, Y" }}</td>
+                    <td>
+                        {% if delivery.is_delivered %}
+                        <span class="badge badge-delivered">Delivered</span>
+                        {% else %}
+                        <span class="badge badge-pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-action btn-edit" href="{% url 'store:delivery-update' delivery.pk %}">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a class="btn btn-action btn-delete" href="{% url 'store:delivery-delete' delivery.pk %}">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </span>
+            </li>
+            {% endif %}
+            
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock content %}

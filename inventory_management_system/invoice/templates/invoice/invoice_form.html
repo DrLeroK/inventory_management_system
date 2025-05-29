@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Update Invoice{% else %}Create Invoice{% endif %}
+{% endblock title %}
+
+{% block content %}
+<div class="invoice-form-container">
+    <div class="invoice-form-card">
+        <form method="POST" enctype="multipart/form-data" class="invoice-form">
+            {% csrf_token %}
+            
+            <!-- Form Header -->
+            <div class="invoice-form-header">
+                <h2 class="invoice-form-title">
+                    <i class="fas fa-file-invoice me-2" style="color: var(--secondary-color);"></i>
+                    {% if object %}Update Invoice{% else %}Create New Invoice{% endif %}
+                </h2>
+                <div class="invoice-form-divider"></div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="invoice-form-content">
+                {{ form.media }}
+                {{ form|crispy }}
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="invoice-form-actions">
+                <button type="submit" class="invoice-submit-btn">
+                    <i class="fas fa-check-circle me-1"></i>
+                    {% if object %}Update Invoice{% else %}Create Invoice{% endif %}
+                </button>
+                <a href="{% url 'invoice:invoice-list' %}" 
+                   class="invoice-cancel-btn">
+                    <i class="fas fa-times-circle me-1"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Vendor List Header -->
+<div class="vendor-list-header-container">
+    <div class="vendor-list-header-card">
+        <div class="vendor-list-header-row">
+            <div class="vendor-list-title-col">
+                <h1 class="vendor-list-title">
+                    <i class="fas fa-truck vendor-list-title-icon"></i> Vendors
+                </h1>
+            </div>
+            <div class="vendor-list-actions-col">
+                <a href="{% url 'accounts:vendor-create' %}" class="btn vendor-list-add-btn">
+                    <i class="fas fa-plus vendor-list-btn-icon"></i> Add Vendor
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor List Table -->
+<div class="vendor-list-table-container">
+    <div class="vendor-list-table-responsive">
+        <table class="vendor-list-table">
+            <thead class="vendor-list-table-header">
+                <tr>
+                    <th class="vendor-list-col-name">Name</th>
+                    <th class="vendor-list-col-phone">Phone Number</th>
+                    <th class="vendor-list-col-address">Address</th>
+                    <th class="vendor-list-col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="vendor-list-table-body">
+                {% for vendor in vendors %}
+                <tr class="vendor-list-table-row">
+                    <td class="vendor-list-col-name">{{ vendor.name }}</td>
+                    <td class="vendor-list-col-phone">{{ vendor.phone_number }}</td>
+                    <td class="vendor-list-col-address">{{ vendor.address }}</td>
+                    <td class="vendor-list-col-actions">
+                        <div class="vendor-list-action-btns">
+                            <a href="{% url 'accounts:vendor-update' vendor.pk %}" class="btn vendor-list-edit-btn">
+                                <i class="fas fa-edit vendor-list-btn-icon"></i> Edit
+                            </a>
+                            <a href="{% url 'accounts:vendor-delete' vendor.pk %}" class="btn vendor-list-delete-btn">
+                                <i class="fas fa-trash-alt vendor-list-btn-icon"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="vendor-list-pagination">
+        <nav aria-label="Vendor pagination">
+            <ul class="pagination justify-content-center">
+                <!-- First Page Link -->
+                {% if vendors.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+
+                <!-- Previous Page Link -->
+                {% if vendors.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ vendors.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+
+                <!-- Page Number Links -->
+                {% for num in vendors.paginator.page_range %}
+                    {% if vendors.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next Page Link -->
+                {% if vendors.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ vendors.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+
+                <!-- Last Page Link -->
+                {% if vendors.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ vendors.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+{% endblock %}

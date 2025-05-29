@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="customer-form-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card customer-form-card">
+                <div class="customer-form-header">
+                    <h2 class="customer-form-title">
+                        <i class="fas fa-{% if form.instance.pk %}user-edit{% else %}user-plus{% endif %} me-2"></i>
+                        {% if form.instance.pk %}Edit{% else %}Create{% endif %} Customer
+                    </h2>
+                </div>
+                
+                <div class="customer-form-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="form-actions">
+                            <a href="{% url 'accounts:customer-list' %}" class="btn btn-cancel">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-save">
+                                <i class="fas fa-save me-2"></i> Save Customer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

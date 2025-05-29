@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Staff Management{% endblock %}
+
+{% block content %}
+<div class="staff-management-container">
+  <div class="staff-management-row">
+    
+    <!-- Main Content Column -->
+    <main class="staff-management-main">
+      <div class="staff-management-header">
+        <div class="staff-management-title-wrapper">
+          <h2 class="staff-management-title">
+            <i class="fas fa-users-cog staff-management-title-icon"></i> Staff Management
+          </h2>
+          <p class="staff-management-subtitle">Manage all staff accounts and permissions</p>
+        </div>
+        <div class="staff-management-actions">
+          <a href="{% url 'accounts:profile-create' %}" class="btn staff-management-add-btn">
+            <i class="fas fa-user-plus staff-management-btn-icon"></i> Add Staff
+          </a>
+          <a href="#" class="btn staff-management-export-btn">
+            <i class="fas fa-file-export staff-management-btn-icon"></i> Export
+          </a>
+        </div>
+      </div>
+
+      <div class="staff-management-card">
+        <div class="staff-management-card-body">
+          <div class="staff-management-table-responsive">
+            <table class="staff-management-table">
+              <thead class="staff-management-table-header">
+                <tr>
+                  <th class="staff-management-col-id">ID</th>
+                  <th class="staff-management-col-avatar">Profile</th>
+                  <th class="staff-management-col-username">Username</th>
+                  <th class="staff-management-col-phone">Phone</th>
+                  <th class="staff-management-col-status">Status</th>
+                  <th class="staff-management-col-role">Role</th>
+                  <th class="staff-management-col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="staff-management-table-body">
+                {% for profile in profiles %}
+                <tr class="staff-management-table-row">
+                  <td class="staff-management-col-id">{{ profile.id }}</td>
+                  <td class="staff-management-col-avatar">
+                    {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" class="staff-avatar-img" alt="Profile">
+                    {% else %}
+                    <div class="staff-avatar-initials">
+                      {{ profile.user.username|first|upper }}
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td class="staff-management-col-username">
+                    <span class="staff-username">{{ profile.user.username }}</span>
+                  </td>
+                  <td class="staff-management-col-phone">
+                    {{ profile.telephone|default:"-" }}
+                  </td>
+                  <td class="staff-management-col-status">
+                    {% if profile.status == 'A' %}
+                    <span class="staff-status-badge staff-status-active">Active</span>
+                    {% elif profile.status == 'OL' %}
+                    <span class="staff-status-badge staff-status-onleave">On Leave</span>
+                    {% else %}
+                    <span class="staff-status-badge staff-status-inactive">Inactive</span>
+                    {% endif %}
+                  </td>
+                  <td class="staff-management-col-role">
+                    {% if profile.role == 'AD' %}
+                    <span class="staff-role-badge staff-role-admin">Admin</span>
+                    {% elif profile.role == 'EX' %}
+                    <span class="staff-role-badge staff-role-executive">Executive</span>
+                    {% else %}
+                    <span class="staff-role-badge staff-role-operative">Operative</span>
+                    {% endif %}
+                  </td>
+                  <td class="staff-management-col-actions">
+                    <div class="staff-action-buttons">
+                      <a href="{% url 'accounts:profile-update' profile.id %}" class="btn staff-edit-btn" title="Edit" data-bs-toggle="tooltip">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="{% url 'accounts:profile-delete' profile.id %}" class="btn staff-delete-btn" title="Delete" data-bs-toggle="tooltip">
+                        <i class="fas fa-trash-alt"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}

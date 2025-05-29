@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="delete-confirmation-container">
+    <h1 class="delete-confirmation-title">Confirm Deletion</h1>
+    
+    <p class="delete-confirmation-message">
+        Are you sure you want to delete <span class="delete-confirmation-object">"{{ object }}"</span>? 
+        This action cannot be undone.
+    </p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-confirm-delete">
+                <i class="fas fa-trash-alt me-2"></i>Confirm Delete
+            </button>
+            <a href="{% url 'accounts:customer-list' %}" class="btn btn-cancel">
+                <i class="fas fa-times me-2"></i>Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

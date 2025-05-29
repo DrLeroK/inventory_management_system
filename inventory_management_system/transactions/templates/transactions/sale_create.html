@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Sale{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Create New Sale</h2>
+        <a href="{% url 'transactions:sale-list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Sales
+        </a>
+    </div>
+
+    <form id="sale-form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="sub_total" id="sub_total" value="0">
+        <div class="row">
+            <!-- Items Section -->
+            <div class="col-md-8 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Sale Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Search Product</label>
+                            <select class="form-control" id="product-search">
+                                <option value="">Select a product...</option>
+                                {% for product in products %}
+                                <option value="{{ product.id }}" 
+                                        data-price="{{ product.price }}"
+                                        data-stock="{{ product.quantity }}">
+                                    {{ product.name }} - ETB {{ product.price }} (Stock: {{ product.quantity }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table" id="items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Items will be added here dynamically -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                        <td id="subtotal-display">ETB 0.00</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Sale Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form.customer|as_crispy_field }}
+                        {{ form.sub_total|as_crispy_field }}
+                        {{ form.tax_percentage|as_crispy_field }}
+                        <div class="mb-3">
+                            <label class="form-label">Tax Amount</label>
+                            <input type="text" id="tax-amount" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Grand Total</label>
+                            <input type="text" id="grand-total" class="form-control" readonly>
+                        </div>
+                        {{ form.amount_paid|as_crispy_field }}
+                        <div class="mb-3">
+                            <label class="form-label">Change</label>
+                            <input type="text" id="amount-change" class="form-control" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-3">
+                            <i class="fas fa-save me-2"></i> Complete Sale
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Document ready handler - runs when page is fully loaded
+$(document).ready(function() {
+    
+    // =============================================
+    // PRODUCT SELECTION AND ITEM MANAGEMENT
+    // =============================================
+    
+    // Array to store all items in the current sale
+    const saleItems = [];
+
+    // Handle product selection from dropdown
+    $('#product-search').change(function() {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.val()) {
+            // Extract product details and add to sale
+            addProductToSale(
+                selectedOption.val(),      // Product ID
+                selectedOption.text().split(' - ')[0],  // Product name
+                parseFloat(selectedOption.data('price')),  // Price
+                parseInt(selectedOption.data('stock'))     // Available stock
+            );
+            $(this).val(''); // Reset dropdown selection
+        }
+    });
+
+    // Add a product to the sale
+    function addProductToSale(id, name, price, stock) {
+        // Check if product already exists in sale
+        const existingItem = saleItems.find(item => item.id === id);
+        
+        if (existingItem) {
+            // If exists, increase quantity if stock allows
+            if (existingItem.quantity < stock) {
+                existingItem.quantity++;
+                existingItem.total = existingItem.quantity * existingItem.price;
+                updateItemInTable(existingItem);
+            } else {
+                alert('Cannot add more than available stock!');
+            }
+        } else {
+            // If new product, create item object
+            const newItem = {
+                id: id,
+                name: name,
+                price: price,
+                quantity: 1,
+                total: price,
+                stock: stock
+            };
+            saleItems.push(newItem);  // Add to array
+            addItemToTable(newItem);  // Add to HTML table
+        }
+        updateTotals();  // Recalculate all totals
+    }
+
+    // Add item row to the HTML table
+    function addItemToTable(item) {
+        const row = `
+            <tr data-id="${item.id}">
+                <td>${item.name}</td>
+                <td>$${item.price.toFixed(2)}</td>
+                <td>
+                    <input type="number" class="form-control quantity" 
+                           value="${item.quantity}" min="1" max="${item.stock}">
+                </td>
+                <td class="item-total">$${item.total.toFixed(2)}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm remove-item">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        $('#items-table tbody').append(row);
+    }
+
+    // Update existing item in HTML table
+    function updateItemInTable(item) {
+        const row = $(`#items-table tr[data-id="${item.id}"]`);
+        row.find('.quantity').val(item.quantity);
+        row.find('.item-total').text('$' + item.total.toFixed(2));
+    }
+
+    // =============================================
+    // EVENT HANDLERS FOR ITEM MANAGEMENT
+    // =============================================
+
+    // Handle quantity changes for items
+    $('#items-table').on('change', '.quantity', function() {
+        const row = $(this).closest('tr');
+        const id = row.data('id');
+        const newQuantity = parseInt($(this).val());
+        const stock = parseInt($(this).attr('max'));
+        
+        // Validate against available stock
+        if (newQuantity > stock) {
+            alert('Cannot exceed available stock!');
+            $(this).val(stock);
+            return;
+        }
+        
+        // Update item in array and table
+        const item = saleItems.find(item => item.id === id);
+        if (item) {
+            item.quantity = newQuantity;
+            item.total = item.price * newQuantity;
+            row.find('.item-total').text('$' + item.total.toFixed(2));
+            updateTotals();
+        }
+    });
+
+    // Handle item removal
+    $('#items-table').on('click', '.remove-item', function() {
+        const row = $(this).closest('tr');
+        const id = row.data('id');
+        
+        // Remove from array
+        const index = saleItems.findIndex(item => item.id === id);
+        if (index !== -1) {
+            saleItems.splice(index, 1);
+        }
+        
+        // Remove from table
+        row.remove();
+        updateTotals();
+    });
+
+    // =============================================
+    // CALCULATION FUNCTIONS
+    // =============================================
+
+    // Calculate and update all totals
+    function updateTotals() {
+        // Calculate subtotal (sum of all item totals)
+        const subTotal = saleItems.reduce((sum, item) => sum + item.total, 0);
+        
+        // Get tax percentage and amount paid (default to 0 if empty)
+        const taxPercentage = parseFloat($('input[name="tax_percentage"]').val()) || 0;
+        const amountPaid = parseFloat($('input[name="amount_paid"]').val()) || 0;
+
+        // Calculate tax and grand total
+        const taxAmount = subTotal * (taxPercentage / 100);
+        const grandTotal = subTotal + taxAmount;
+        const change = amountPaid - grandTotal;
+
+        // Update visible fields
+        $('#subtotal-display').text('$' + subTotal.toFixed(2));
+        $('#tax-amount').val(taxAmount.toFixed(2));
+        $('#grand-total').val(grandTotal.toFixed(2));
+        $('#amount-change').val(change.toFixed(2));
+        
+        // Update hidden form field for subtotal
+        $('input[name="sub_total"]').val(subTotal.toFixed(2));
+        
+        // Visual feedback for negative change
+        if (change < 0) {
+            $('#amount-change').addClass('text-danger');
+        } else {
+            $('#amount-change').removeClass('text-danger');
+        }
+    }
+
+    // Update totals when tax or payment values change
+    $('input[name="tax_percentage"], input[name="amount_paid"]').on('input', updateTotals);
+
+    // =============================================
+    // FORM SUBMISSION HANDLING
+    // =============================================
+
+    // Handle form submission
+    $('#sale-form').on('submit', function(e) {
+        e.preventDefault();  // Prevent default form submission
+        
+        // Validate at least one product exists
+        if (saleItems.length === 0) {
+            alert('Please add at least one product!');
+            return;
+        }
+
+        // Validate subtotal is positive
+        const subTotal = parseFloat($('input[name="sub_total"]').val());
+        if (isNaN(subTotal) || subTotal <= 0) {
+            alert('Please add at least one product with valid price!');
+            return;
+        }
+
+        // Get CSRF token for security
+        const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+    
+        // Prepare form data for AJAX submission
+        const formData = new FormData();
+        
+        // Add form fields
+        formData.append('customer', $('select[name="customer"]').val());
+        formData.append('sub_total', $('input[name="sub_total"]').val());
+        formData.append('tax_percentage', $('input[name="tax_percentage"]').val());
+        formData.append('amount_paid', $('input[name="amount_paid"]').val());
+        
+        // Add all sale items
+        saleItems.forEach((item, index) => {
+            formData.append(`items[${index}][id]`, item.id);
+            formData.append(`items[${index}][price]`, item.price);
+            formData.append(`items[${index}][quantity]`, item.quantity);
+        });
+        
+        // Disable submit button during processing
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+        // Submit via AJAX
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,  // Required for FormData
+            contentType: false,  // Required for FormData
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                // On success, redirect to sales list
+                if (response.success || response.redirect) {
+                    window.location.href = response.redirect || '{% url "transactions:sale-list" %}';
+                } else {
+                    // Show error if response indicates failure
+                    alert(response.error || 'Error processing sale');
+                    submitBtn.prop('disabled', false).html('Complete Sale');
+                }
+            },
+            error: function(xhr) {
+                // Handle AJAX errors
+                let errorMsg = 'Sale processing failed';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                } else if (xhr.statusText) {
+                    errorMsg += ': ' + xhr.statusText;
+                }
+                alert(errorMsg);
+                submitBtn.prop('disabled', false).html('Complete Sale');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Confirm delete{% endblock %}
+
+{% block content %}
+<div class="delete-confirm-container">
+    <form method="POST" class="delete-confirm-form">
+        {% csrf_token %}
+        <fieldset class="delete-confirm-fieldset">
+            <legend class="delete-confirm-legend">Delete Sale Record</legend>
+            <p class="delete-confirm-message">Are you sure you want to permanently delete the sale "{{ object.slug }}"?</p>
+        </fieldset>
+        <div class="delete-confirm-actions">
+            <button class="delete-confirm-btn delete-confirm-btn--danger" type="submit">
+                Yes, Delete
+            </button>
+            <a class="delete-confirm-btn delete-confirm-btn--cancel" href="{% url 'transactions:sale-list' %}">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

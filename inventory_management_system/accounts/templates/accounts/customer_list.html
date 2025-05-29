@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Customer List Header -->
+<div class="customer-list-header-container">
+    <div class="customer-list-header-card">
+        <div class="customer-list-header-row">
+            <div class="customer-list-title-col">
+                <h1 class="customer-list-main-title">
+                    <i class="fas fa-users me-2"></i>Customer Management
+                </h1>
+            </div>
+            <div class="customer-list-actions-col">
+                <a class="btn customer-list-add-btn" href="{% url 'accounts:customer-create' %}">
+                    <i class="fas fa-user-plus me-2"></i>Add New Customer
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer List Table -->
+<div class="customer-list-table-container">
+    <div class="customer-list-table-responsive">
+        <table class="customer-list-table">
+            <thead class="customer-list-table-header">
+                <tr>
+                    <th class="customer-list-col-id">ID</th>
+                    <th class="customer-list-col-name">First Name</th>
+                    <th class="customer-list-col-name">Last Name</th>
+                    <th class="customer-list-col-address">Address</th>
+                    <th class="customer-list-col-email">Email</th>
+                    <th class="customer-list-col-phone">Phone</th>
+                    <th class="customer-list-col-points">Loyalty Points</th>
+                    <th class="customer-list-col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="customer-list-table-body">
+                {% for customer in customers %}
+                <tr class="customer-list-table-row">
+                    <td class="customer-list-col-id">{{ forloop.counter }}</td>
+                    <td class="customer-list-col-name">{{ customer.first_name }}</td>
+                    <td class="customer-list-col-name">{{ customer.last_name }}</td>
+                    <td class="customer-list-col-address">{{ customer.address|default:"-" }}</td>
+                    <td class="customer-list-col-email">{{ customer.email|default:"-" }}</td>
+                    <td class="customer-list-col-phone">{{ customer.phone|default:"-" }}</td>
+                    <td class="customer-list-col-points">
+                        <span class="customer-loyalty-badge">{{ customer.loyalty_points }}</span>
+                    </td>
+                    <td class="customer-list-col-actions">
+                        <div class="customer-list-action-btns">
+                            <a href="{% url 'accounts:customer-update' customer.pk %}" class="btn customer-list-edit-btn">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <a href="{% url 'accounts:customer-delete' customer.pk %}" class="btn customer-list-delete-btn">
+                                <i class="fas fa-trash-alt me-1"></i>Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Empty State -->
+{% if not customers %}
+<div class="customer-list-empty-state">
+    <div class="customer-list-empty-icon">
+        <i class="fas fa-user-slash"></i>
+    </div>
+    <h3 class="customer-list-empty-title">No Customers Found</h3>
+    <p class="customer-list-empty-text">Get started by adding your first customer</p>
+    <a href="{% url 'accounts:customer-create' %}" class="btn customer-list-add-btn">
+        <i class="fas fa-user-plus me-2"></i>Add Customer
+    </a>
+</div>
+{% endif %}
+{% endblock %}

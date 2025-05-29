@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="vendor-form-container">
+    <div class="vendor-form-row justify-content-center">
+        <div class="vendor-form-main-col">
+            <div class="vendor-form-card">
+                <div class="vendor-form-card-body">
+                    <h2 class="vendor-form-title">
+                        <i class="fas vendor-form-title-icon {% if form.instance.pk %}fa-edit{% else %}fa-plus-circle{% endif %}"></i>
+                        {{ form.instance.pk|yesno:"Edit Vendor,Add Vendor" }}
+                    </h2>
+                    <div class="vendor-form-divider"></div>
+                    
+                    <form method="post" novalidate class="vendor-form">
+                        {% csrf_token %}
+                        <div class="vendor-form-content">
+                            {{ form|crispy }}
+                        </div>
+                        
+                        <div class="vendor-form-actions">
+                            <a href="{% url 'accounts:vendor-list' %}" class="btn vendor-form-cancel-btn">
+                                <i class="fas fa-arrow-left vendor-form-btn-icon"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn vendor-form-submit-btn">
+                                <i class="fas fa-save vendor-form-btn-icon"></i> Save Vendor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

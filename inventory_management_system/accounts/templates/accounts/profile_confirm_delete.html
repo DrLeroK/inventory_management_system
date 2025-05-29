@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Profile Deletion{% endblock %}
+
+{% block content %}
+<div class="profile-delete-confirm-container">
+  <div class="profile-delete-confirm-row">
+    
+    <!-- Main Content Area -->
+    <main class="profile-delete-confirm-main">
+      <div class="profile-delete-confirm-card">
+        <div class="profile-delete-confirm-header">
+          <h4 class="profile-delete-confirm-title">
+            <i class="fas fa-exclamation-triangle profile-delete-confirm-icon"></i> Confirm Deletion
+          </h4>
+        </div>
+        <div class="profile-delete-confirm-body">
+          <h5 class="profile-delete-confirm-question">Are you sure you want to delete this profile?</h5>
+          <div class="profile-delete-confirm-warning">
+            <strong class="profile-delete-confirm-warning-label">Warning:</strong> 
+            This will permanently delete the staff account for <strong class="profile-delete-confirm-username">{{ object.user.username }}</strong>.
+          </div>
+          
+          <form method="post" class="profile-delete-confirm-form">
+            {% csrf_token %}
+            <div class="profile-delete-confirm-actions">
+              <a href="{% url 'accounts:profile-list' %}" class="btn profile-delete-confirm-cancel-btn">
+                <i class="fas fa-times profile-delete-confirm-btn-icon"></i> Cancel
+              </a>
+              <button type="submit" class="btn profile-delete-confirm-submit-btn">
+                <i class="fas fa-trash-alt profile-delete-confirm-btn-icon"></i> Confirm Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}

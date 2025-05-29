@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<section class="login-section">
+    <div class="container">
+        <div class="login-card">
+            <div class="login-icon mb-3">
+                <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--secondary-color);"></i>
+            </div>
+            <h1 class="login-title">WELCOME BACK</h1>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {{ form|crispy }}
+                
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt mr-2"></i> LOGIN
+                </button>
+                
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="delete-category-container">
+    <div class="container">
+        <div class="delete-category-card">
+            <h2 class="delete-category-header">
+                <i class="fas fa-trash-alt"></i>
+                Delete Category
+            </h2>
+            
+            <div class="delete-category-alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h5 class="mb-1">Are you sure you want to delete "{{ category.name }}"?</h5>
+                    <p class="mb-0 text-muted">This action cannot be undone.</p>
+                </div>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="delete-category-actions">
+                    <a href="{% url 'store:category-list' %}" class="btn btn-cancel-delete">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-confirm-delete">
+                        <i class="fas fa-check"></i> Confirm Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

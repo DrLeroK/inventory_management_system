@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create New Staff Profile{% endblock %}
+
+{% block content %}
+<div class="staff-create-container">
+    <div class="staff-create-row">
+        <div class="staff-create-main-col">
+            <div class="staff-create-card">
+                <div class="staff-create-card-header">
+                    <h2 class="staff-create-title">
+                        <i class="fas fa-user-plus staff-create-title-icon"></i>Create New Staff Profile
+                    </h2>
+                </div>
+                <div class="staff-create-card-body">
+                    <form method="post" enctype="multipart/form-data" class="staff-create-form">
+                        {% csrf_token %}
+                        
+                        <div class="staff-create-form-content">
+                            {{ form|crispy }}
+                        </div>
+                        
+                        <div class="staff-create-form-actions">
+                            <a href="{% url 'accounts:profile-list' %}" class="btn staff-create-cancel-btn">
+                                <i class="fas fa-arrow-left staff-create-btn-icon"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn staff-create-submit-btn">
+                                <i class="fas fa-save staff-create-btn-icon"></i>Create Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

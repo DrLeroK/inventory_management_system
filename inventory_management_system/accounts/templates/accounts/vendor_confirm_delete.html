@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="vendor-delete-container">
+    <div class="vendor-delete-card">
+        <div class="vendor-delete-header">
+            <h1 class="vendor-delete-title">
+                <i class="fas fa-exclamation-triangle vendor-delete-icon"></i> Confirm Deletion
+            </h1>
+        </div>
+        
+        <div class="vendor-delete-body">
+            <p class="vendor-delete-message">
+                Are you sure you want to permanently delete vendor 
+                <strong class="vendor-delete-name">"{{ object.name }}"</strong>?
+            </p>
+            
+            <div class="vendor-delete-warning">
+                <i class="fas fa-exclamation-circle vendor-delete-warning-icon"></i>
+                This action cannot be undone and will remove all associated data.
+            </div>
+            
+            <form method="post" class="vendor-delete-form">
+                {% csrf_token %}
+                <div class="vendor-delete-actions">
+                    <a href="{% url 'accounts:vendor-list' %}" class="btn vendor-delete-cancel-btn">
+                        <i class="fas fa-arrow-left vendor-delete-btn-icon"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn vendor-delete-confirm-btn">
+                        <i class="fas fa-trash-alt vendor-delete-btn-icon"></i> Delete Permanently
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<
+{% endblock %}

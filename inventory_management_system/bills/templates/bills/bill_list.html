@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
+{% load static %}
+
+{% block title %}Bills{% endblock title %}
+
+{% block content %}
+<div class="bills-management-container" style="margin-right: 100px; margin-left: 50px;">
+    <!-- Header Section with Left Title and Right Actions -->
+    <div class="bills-header-row">
+        <div class="bills-title-wrapper">
+            <h2 class="bills-page-title">
+                <i class="fas fa-file-invoice"></i> Bills Management
+            </h2>
+        </div>
+        <div class="bills-actions-wrapper">
+            <a href="{% url 'bills:bill-create' %}" class="btn btn-add-bill">
+                <i class="fas fa-plus"></i> Add Bill
+            </a>
+            <a href="{% querystring '_export'='xlsx' %}" class="btn btn-export-bills">
+                <i class="fas fa-file-export"></i> Export
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="bills-table-container">
+        <div class="table-responsive">
+            <table class="table bills-data-table">
+                <thead class="bills-table-header">
+                    <tr>
+                        <th>ID</th>
+                        <th>Institution</th>
+                        <th>Description</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Payment</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr class="bills-table-row">
+                        <td>{{ bill.id }}</td>
+                        <td>{{ bill.institution_name }}</td>
+                        <td>{{ bill.description }}</td>
+                        <td>{{ bill.phone_number }}</td>
+                        <td>{{ bill.email }}</td>
+                        <td>{{ bill.payment_details }}</td>
+                        <td>{{ bill.amount }}</td>
+                        <td>
+                            <span class="status-badge {% if bill.status %}status-paid{% else %}status-pending{% endif %}">
+                                {% if bill.status %}Paid{% else %}Pending{% endif %}
+                            </span>
+                        </td>
+                        <td class="action-buttons">
+                            <a href="{% url 'bills:bill-update' bill.slug %}" class="btn-action btn-edit" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'bills:bill-delete' bill.pk %}" class="btn-action btn-delete" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Centered Pagination -->
+    {% if is_paginated %}
+    <div class="bills-pagination">
+        <nav aria-label="Bills pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+                
+                {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active">
+                    <span class="page-link">{{ i }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirm Delete Item{% endblock %}
+
+{% block content %}
+<div class="delete-confirm-page">
+    <div class="container delete-confirm-container">
+        <div class="card delete-confirm-card">
+            <div class="delete-confirm-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2 class="mb-0">Delete Product</h2>
+            </div>
+            
+            <div class="delete-confirm-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="delete-confirm-alert">
+                        <p class="delete-confirm-text">
+                            Are you sure you want to permanently delete 
+                            <strong>"{{ object.name }}"</strong>?
+                        </p>
+                        <p class="delete-confirm-note">
+                            <i class="fas fa-info-circle"></i>
+                            This action cannot be undone.
+                        </p>
+                    </div>
+                    
+                    <div class="delete-confirm-actions">
+                        <a href="{% url 'store:product-list' %}" class="btn btn-cancel btn-lg">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                        <button class="btn btn-delete btn-lg" type="submit">
+                            <i class="fas fa-trash-alt me-1"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

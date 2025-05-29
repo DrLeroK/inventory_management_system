@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Invoice #{{ invoice.slug }}{% endblock %}
+
+{% block content %}
+<div class="invoice-detail-container">
+  <div class="invoice-detail-card">
+    <!-- Header Section -->
+    <div class="invoice-header">
+      <div class="invoice-business-info">
+        <h2 class="invoice-business-name" style="color: var(--primary-color);">ISMS</h2>
+        <p class="invoice-business-address">{{ invoice.business_address|default:"696 Business Street, Addis Ababa" }}</p>
+        <p class="invoice-business-contact">Phone: {{ invoice.business_phone|default:"+251 xxx xxx xxxx" }}</p>
+      </div>
+      
+      <div class="invoice-title-section">
+        <h1 class="invoice-title" style="color: var(--accent-color);">INVOICE</h1>
+        <div class="invoice-meta">
+          <p class="invoice-number">ORDER #{{ invoice.slug }}</p>
+          <p class="invoice-date">{{ invoice.date|date:"F j, Y H:i" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="invoice-divider"></div>
+
+    <!-- Customer Info -->
+    <div class="invoice-customer-section">
+      <div class="invoice-customer-info">
+        <h3 class="section-title">Bill To:</h3>
+        <p class="customer-name"><strong>{{ invoice.customer_name }}</strong></p>
+        <p class="customer-phone">Phone: {{ invoice.contact_number }}</p>
+      </div>
+      
+      <div class="invoice-actions">
+        <a href="#" class="invoice-print-btn">
+          <i class="fas fa-print"></i> Print Invoice
+        </a>
+      </div>
+    </div>
+
+    <!-- Invoice Items -->
+    <div class="invoice-items-section">
+      <table class="invoice-items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th class="text-center">Unit Price</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-end">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-details">
+              <strong>{{ invoice.item.name }}</strong>
+              {% if invoice.item.description %}
+              <p class="item-description">{{ invoice.item.description }}</p>
+              {% endif %}
+            </td>
+            <td class="text-center">ETB {{ invoice.price_per_item }}</td>
+            <td class="text-center">{{ invoice.quantity }}</td>
+            <td class="text-end">ETB {{ invoice.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Invoice Totals -->
+    <div class="invoice-totals-section">
+      <table class="invoice-totals-table">
+        <tbody>
+          <tr>
+            <th class="text-end">Subtotal:</th>
+            <td class="text-end">ETB {{ invoice.total }}</td>
+          </tr>
+          <tr>
+            <th class="text-end">Shipping:</th>
+            <td class="text-end">ETB {{ invoice.shipping }}</td>
+          </tr>
+          <tr class="grand-total-row">
+            <th class="text-end">Grand Total:</th>
+            <td class="text-end">ETB {{ invoice.grand_total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Invoice Footer -->
+    <div class="invoice-footer-section">
+      <div class="invoice-payment-info">
+        <h3 class="section-title">Payment Info</h3>
+        <p>Bank: X Commercial Bank</p>
+        <p>Account Name: ISMS Ltd</p>
+        <p>Account No: 10006xxxxxxxx</p>
+      </div>
+      
+      <div class="invoice-thankyou">
+        <div class="thankyou-card">
+          <p class="thankyou-message">Thank you for your business!</p>
+          <p class="thankyou-contact">Questions? Email: ISMS@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

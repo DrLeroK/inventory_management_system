@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="user-profile-container">
+    <div class="user-profile-card">
+        <!-- Profile Header with Image -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" 
+                     class="profile-avatar-img" 
+                     alt="Profile Image">
+                {% else %}
+                <div class="profile-avatar-initials">
+                    {{ user.username|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="profile-header-info">
+                <h1 class="profile-name">{{ user.profile.first_name }} {{ user.profile.last_name }}</h1>
+                <div class="profile-role-badge">
+                    {% if user.profile.role == 'AD' %}
+                    <i class="fas fa-shield-alt"></i> Administrator
+                    {% elif user.profile.role == 'EX' %}
+                    <i class="fas fa-user-tie"></i> Executive
+                    {% else %}
+                    <i class="fas fa-user"></i> Operative
+                    {% endif %}
+                </div>
+            </div>
+            <a href="{% url 'accounts:profile-update' user.pk %}" class="profile-edit-btn">
+                <i class="fas fa-pencil-alt"></i> Edit Profile
+            </a>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="profile-details">
+            <div class="detail-section">
+                <h3 class="section-title">
+                    <i class="fas fa-id-card"></i> Basic Information
+                </h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Username</span>
+                        <span class="detail-value">{{ user.username }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{ user.email|default:"-" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">{{ user.profile.telephone|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i> Additional Details
+                </h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">First Name</span>
+                        <span class="detail-value">{{ user.profile.first_name|default:"-" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Last Name</span>
+                        <span class="detail-value">{{ user.profile.last_name|default:"-" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Account Status</span>
+                        <span class="detail-value status-active">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

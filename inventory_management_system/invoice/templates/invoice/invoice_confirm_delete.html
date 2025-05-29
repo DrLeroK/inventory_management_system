@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <div class="delete-confirmation-card">
+        <form method="POST" class="delete-confirmation-form">
+            {% csrf_token %}
+            
+            <!-- Warning Header -->
+            <div class="delete-confirmation-header">
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <h3 class="delete-confirmation-title">Delete Invoice</h3>
+            </div>
+            
+            <!-- Warning Message -->
+            <div class="delete-confirmation-body">
+                <p>Are you sure you want to permanently delete the invoice:</p>
+                <p class="invoice-to-delete"><strong>"{{ object.slug }}"</strong></p>
+                <p class="warning-note"><i class="fas fa-info-circle"></i> This action cannot be undone.</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="delete-confirmation-actions">
+                <button type="submit" class="btn-confirm-delete">
+                    <i class="fas fa-trash-alt"></i> Confirm Delete
+                </button>
+                <a href="{% url 'invoice:invoice-list' %}" class="btn-cancel-delete">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

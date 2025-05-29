@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <div class="delete-confirmation-card">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="delete-confirmation-header">
+                <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                <h3 class="delete-confirmation-title" style="color: var(--primary-color);">Delete Purchase</h3>
+            </div>
+            
+            <div class="delete-confirmation-body">
+                <p class="delete-confirmation-message">
+                    Are you sure you want to permanently delete the purchase record 
+                    <strong>"{{ object.slug }}"</strong>?
+                </p>
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle me-1"></i> This action cannot be undone.
+                </p>
+            </div>
+            
+            <div class="delete-confirmation-actions">
+                <button class="btn btn-delete" type="submit">
+                    <i class="fas fa-trash-alt me-1"></i> Confirm Delete
+                </button>
+                <a href="{% url 'transactions:purchase-list' %}" class="btn btn-cancel">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

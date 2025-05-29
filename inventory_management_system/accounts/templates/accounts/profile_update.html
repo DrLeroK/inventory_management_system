@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <div class="profile-edit-card">
+        <div class="profile-edit-header">
+            <h1 class="profile-edit-title">
+                <i class="fas fa-user-edit profile-edit-icon"></i> Edit Your Profile
+            </h1>
+        </div>
+        
+        <div class="profile-edit-body">
+            <form method="POST" enctype="multipart/form-data" class="profile-edit-form">
+                {% csrf_token %}
+                
+                <div class="profile-edit-form-content">
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="profile-edit-actions">
+                    <a href="{% url 'accounts:profile' %}" class="btn profile-edit-cancel-btn">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn profile-edit-submit-btn">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

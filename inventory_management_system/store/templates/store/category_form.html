@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ object|default_if_none:"Create Category" }}{% if object %} Update{% else %} Create{% endif %}
+{% endblock title %}
+
+{% block content %}
+<div class="category-form-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card category-form-card">
+                    <div class="category-form-header">
+                        <h1>
+                            <i class="fas fa-{% if object %}edit{% else %}plus-circle{% endif %}"></i>
+                            {% if object %}
+                                Update Category
+                            {% else %}
+                                Create New Category
+                            {% endif %}
+                        </h1>
+                    </div>
+                    
+                    <div class="category-form-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            
+                            <button class="btn btn-submit-category" type="submit">
+                                <i class="fas fa-check"></i>
+                                {% if object %}
+                                    Update Category
+                                {% else %}
+                                    Create Category
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if is_update %}Update{% else %}Add{% endif %} Bill Record
+{% endblock title %}
+
+{% block content %}
+<div class="bill-form-container">
+    <div class="bill-form-wrapper">
+        <form method="POST" enctype="multipart/form-data" class="bill-form">
+            {% csrf_token %}
+            <div class="bill-form-header">
+                <h2 class="bill-form-title">
+                    <i class="fas fa-{% if is_update %}edit{% else %}plus-circle{% endif %}"></i>
+                    {% if is_update %}Update{% else %}Create New{% endif %} Bill
+                </h2>
+                <div class="bill-form-divider"></div>
+            </div>
+            
+            <div class="bill-form-content">
+                {{ form.media }}
+                {{ form|crispy }}
+            </div>
+            
+            <div class="bill-form-actions">
+                <button class="bill-form-submit" type="submit">
+                    {% if is_update %}Update Record{% else %}Create Bill{% endif %}
+                </button>
+                <a href="{% url 'bills:bill-list' %}" class="bill-form-cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

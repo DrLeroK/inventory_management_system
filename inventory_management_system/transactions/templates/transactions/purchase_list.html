@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Purchases{% endblock title %}
+
+{% block content %}
+<div class="purchases-management-container" style="margin-right: 100px; margin-left: 50px;">
+    <!-- Header Section with Left Title and Right Actions -->
+    <div class="purchases-header-row">
+        <div class="purchases-title-wrapper">
+            <h2 class="purchases-page-title">
+                <i class="fas fa-box"></i> Purchases
+            </h2>
+        </div>
+        <div class="purchases-actions-wrapper">
+            <a href="{% url 'transactions:purchase-create' %}" class="btn btn-add-purchase">
+                <i class="fas fa-plus"></i> Add Purchase
+            </a>
+            <a href="{% url 'transactions:purchase-export' %}" class="btn btn-export-purchases">
+                <i class="fas fa-file-export"></i> Export
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="purchases-table-container">
+        <div class="table-responsive">
+            <table class="table purchases-data-table">
+                <thead class="purchases-table-header">
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Status</th>
+                        <th>Delivery Date</th>
+                        <th>Vendor</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr class="purchases-table-row">
+                        <td>{{ purchase.id }}</td>
+                        <td>{{ purchase.item.name }}</td>
+                        <td>{{ purchase.quantity }}</td>
+                        <td>{{ purchase.unit_price }}</td>
+                        <td>
+                            <span class="status-badge {% if purchase.delivery_status == 'P' %}status-pending{% else %}status-complete{% endif %}">
+                                {% if purchase.delivery_status == 'P' %}Pending{% else %}Complete{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ purchase.delivery_date|date:"M d, Y" }}</td>
+                        <td>{{ purchase.vendor.name }}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'transactions:purchase-update' purchase.id %}" class="btn-action btn-edit" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'transactions:purchase-delete' purchase.id %}" class="btn-action btn-delete" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Centered Pagination -->
+    {% if is_paginated %}
+    <div class="purchases-pagination">
+        <nav aria-label="Purchases pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+                
+                {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active">
+                    <span class="page-link">{{ i }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}

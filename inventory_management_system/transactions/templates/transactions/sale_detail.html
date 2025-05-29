@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block title %}Transaction Detail{% endblock %}
+
+{% block content %}
+<div class="txn-container">
+    <div class="txn-actions">
+        <a href="#" class="txn-print-btn">
+            <i class="fa fa-print"></i> Print Receipt
+        </a>
+    </div>
+
+    <div class="txn-receipt">
+        <div class="txn-receipt-header">
+            <h3 class="txn-business-name">ISMS</h3>
+            <p class="txn-business-address">696 Business Street, Addis Ababa</p>
+            <p class="txn-business-contact">Tel: +251 xxx xxx xxxx</p>
+            <p class="txn-business-po">P.O BOX. 696</p>
+        </div>
+
+        <div class="txn-details">
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Date:</span>
+                <span class="txn-detail-value">{{ sale.date_added|date:"Y/m/d H:i:s" }}</span>
+            </div>
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Receipt Code:</span>
+                <span class="txn-detail-value">ISMS {{ sale.id }}</span>
+            </div>
+        </div>
+
+        <div class="txn-divider"></div>
+
+        <div class="txn-amounts">
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Sub Total:</span>
+                <span class="txn-detail-value">ETB {{ sale.sub_total }}</span>
+            </div>
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Tax Amount:</span>
+                <span class="txn-detail-value">ETB {{ sale.tax_amount }}</span>
+            </div>
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Grand Total:</span>
+                <span class="txn-detail-value">ETB {{ sale.grand_total }}</span>
+            </div>
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Amount Paid:</span>
+                <span class="txn-detail-value">ETB {{ sale.amount_paid }}</span>
+            </div>
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Balance:</span>
+                <span class="txn-detail-value">ETB {{ sale.amount_change }}</span>
+            </div>
+        </div>
+
+        <div class="txn-divider"></div>
+
+        <div class="txn-customer">
+            <div class="txn-detail-row">
+                <span class="txn-detail-label">Customer:</span>
+                <span class="txn-detail-value">{{ sale.customer.first_name }}</span>
+            </div>
+        </div>
+
+        <div class="txn-footer">
+            <p class="txn-thankyou">Thank You!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
